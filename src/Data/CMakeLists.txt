@@ -1,2 +1,2 @@
 file(GLOB SOURCES "*.cpp")
-add_library( Data ${SOURCES} )
+add_library( DataCommon ${SOURCES} )
