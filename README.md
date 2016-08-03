@@ -1,0 +1,3 @@
+Common classes and definitions to be used in projects to simulate FourFermion theories.
+
+Tests are provided if sensible...
