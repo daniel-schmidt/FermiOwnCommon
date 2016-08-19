@@ -9,6 +9,17 @@
 
 namespace FermiOwn {
 
+// template specialization for integer numbers
+template<> void Field<int>::setGaussian() {
+	auto gaussian = [&] (int) {
+		if(normalDistribution01(*randomGenerator) < 0 )
+			return -1;
+		else
+			return 1;
+	};
+	data = Eigen::Matrix< int, Eigen::Dynamic, 1>::NullaryExpr( data.size(), gaussian ); //TODO: not working...
+}
+
 // template specialization for real numbers
 template<> void Field<Real>::setGaussian() {
 	auto gaussian = [&] (Real) {return normalDistribution01(*randomGenerator); };
