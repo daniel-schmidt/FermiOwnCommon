@@ -9,8 +9,9 @@ set(CMAKE_CXX_FLAGS "-O3 -march=native -std=c++11 -lm -Wall -g -fopenmp")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -march=native -std=c++11 -lm -Wall -O0 -g")
 
 include_directories($ENV{EIGEN3_INCLUDE_DIR})
-include_directories("src/Math")
+include_directories("src/Algorithms")
 include_directories("src/Data")
+include_directories("src/Math")
 
 add_subdirectory("src")
 add_subdirectory("test")

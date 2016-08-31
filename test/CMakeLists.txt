@@ -13,3 +13,6 @@ add_test( Field_testRuns Field_test )
 set_tests_properties (Field_testRuns PROPERTIES PASS_REGULAR_EXPRESSION "Initialization with 0 and 1 works!")
 set_tests_properties (Field_testRuns PROPERTIES PASS_REGULAR_EXPRESSION "Initialization by copy works!")
 set_tests_properties (Field_testRuns PROPERTIES PASS_REGULAR_EXPRESSION "Copy assignment works!")
+
+add_executable( MetropolisStep_test "MetropolisStep_test.cpp" )
+target_link_libraries( MetropolisStep_test AlgorithmsCommon )
