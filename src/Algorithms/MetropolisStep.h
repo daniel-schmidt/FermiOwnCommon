@@ -10,12 +10,9 @@
 
 #include <functional>
 #include <random>
+#include "Constants.h"
 
 namespace FermiOwn {
-
-typedef std::function< void() > voidFun;
-typedef std::function< double() > doubleFun;
-
 
 /**
  * @brief Generic class to perform a single step for a Metropolis algorithm

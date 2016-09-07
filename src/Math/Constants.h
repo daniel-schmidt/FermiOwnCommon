@@ -32,6 +32,10 @@ namespace FermiOwn {
 	const double PI = 3.14159265358979;
 	const Complex I = Complex(0.,1.);
 	const double ZERO_TOL = 1e-10;
+
+	// common function definitions
+	typedef std::function< void() > voidFun;
+	typedef std::function< double() > doubleFun;
 } // namespace FermiOwn
 
 
