@@ -9,7 +9,7 @@
 
 namespace FermiOwn {
 
-ConfigGenerator::ConfigGenerator( size_t numThermal, size_t numConfs, size_t numUpdatesPerConfig, voidFun Step, voidFun onConfig ) :
+ConfigGenerator::ConfigGenerator( size_t numThermal, size_t numConfs, size_t numUpdatesPerConfig, voidFun Step, std::function< bool(int) > onConfig ) :
 	nTher( numThermal ),
 	nConf( numConfs ),
 	nUpPerConf( numUpdatesPerConfig ),
@@ -27,7 +27,8 @@ void ConfigGenerator::run() {
 		for( size_t intermediate = 0; intermediate < nUpPerConf; intermediate++ ) {
 			step();
 		}
-		onConf();
+		bool more = onConf( currConf );
+		if( !more ) break;
 	}
 }
 

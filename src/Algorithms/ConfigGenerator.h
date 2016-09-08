@@ -14,7 +14,7 @@ namespace FermiOwn {
 
 class ConfigGenerator {
 public:
-	ConfigGenerator( size_t numThermal, size_t numConfs, size_t numUpdatesPerConfig, voidFun Step, voidFun onConfig );
+	ConfigGenerator( size_t numThermal, size_t numConfs, size_t numUpdatesPerConfig, voidFun Step, std::function< bool(int) > onConfig );
 	virtual ~ConfigGenerator();
 
 	void run();
@@ -24,7 +24,7 @@ private:
 	size_t nUpPerConf;
 
 	voidFun step;
-	voidFun onConf;
+	std::function< bool(int) > onConf;
 };
 
 } /* namespace FermiOwn */
