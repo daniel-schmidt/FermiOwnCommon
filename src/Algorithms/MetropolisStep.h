@@ -47,6 +47,7 @@ public:
 	 */
 	void step();
 
+	inline virtual bool onConfig( size_t confNum );
 	/**
 	 * @brief Get the percentage of accepted configurations.
 	 * @return the number of accepted steps divided by the total number of steps made
@@ -68,6 +69,9 @@ private:
 	 size_t acceptanceCounter;
 };
 
+bool MetropolisStep::onConfig( size_t confNum ) {
+	return true;
+}
 inline double MetropolisStep::getAcceptance() const {
 	return double(acceptanceCounter)/double(stepCounter);
 }

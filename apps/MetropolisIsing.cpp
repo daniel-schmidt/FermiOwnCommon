@@ -96,8 +96,7 @@ int main( int argc, char** argv ) {
 //			avSpinOnConfig << averageSpinOnConf/double(lat.getVol()) << std::endl;
 //		}
 
-		auto step = [&](){ met.step(); };
-		auto onConfig = [&](int confNum){
+		auto measure = [&](){
 			// average spin on lattice
 			int averageSpinOnConf = 0.;
 			for(size_t x = 0; x < lat.getVol(); x++ )
@@ -106,9 +105,8 @@ int main( int argc, char** argv ) {
 			averageSpin += averageSpinOnConf/double(lat.getVol());
 			avSpinAbs += abs( averageSpinOnConf )/double(lat.getVol());
 			avSpinOnConfig << averageSpinOnConf/double(lat.getVol()) << std::endl;
-			return true;
 		};
-		ConfigGenerator confGen( numThermal, numConfs, numUpPerConf, step, onConfig );
+		ConfigGenerator confGen( numThermal, numConfs, numUpPerConf, &met, measure );
 		confGen.run();
 
 		avSpinOnConfig.close();
