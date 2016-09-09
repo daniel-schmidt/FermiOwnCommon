@@ -13,6 +13,7 @@ include_directories("src/Actions")
 include_directories("src/Algorithms")
 include_directories("src/Data")
 include_directories("src/Math")
+include_directories("apps")
 
 add_subdirectory("src")
 add_subdirectory("test")

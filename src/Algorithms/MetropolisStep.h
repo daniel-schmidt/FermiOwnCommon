@@ -36,7 +36,7 @@ public:
 	 * @param onReject			function to execute, if the proposed configuration is not accepted, i.e. resetting the memory to the old configuration
 	 * @param rndGen			pointer to a random number generator to be used.
 	 */
-	MetropolisStep( voidFun proposeNew, doubleFun calculateChange, voidFun onAccept, voidFun onReject, std::ranlux48* rndGen );
+	MetropolisStep( std::ranlux48* rndGen );
 
 	virtual ~MetropolisStep();
 
@@ -53,15 +53,17 @@ public:
 	 */
 	inline double getAcceptance() const;
 
-private:
-	 voidFun propose;
-	 doubleFun change;
-	 voidFun accept;
-	 voidFun reject;
+protected:
+
+	 virtual void propose() =0;
+	 virtual double change() =0;
+	 virtual void accept() =0;
+	 virtual void reject() =0;
 
 	 std::ranlux48* rnd;
 	 std::uniform_real_distribution<double> uniformDistribution01;
 
+private:
 	 size_t stepCounter;
 	 size_t acceptanceCounter;
 };

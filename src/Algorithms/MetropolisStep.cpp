@@ -9,11 +9,7 @@
 
 namespace FermiOwn {
 
-MetropolisStep::MetropolisStep( voidFun proposeNew, doubleFun calculateChange, voidFun onAccept, voidFun onReject, std::ranlux48* rndGen ) :
-		propose( proposeNew ),
-		change( calculateChange ),
-		accept( onAccept ),
-		reject( onReject ),
+MetropolisStep::MetropolisStep( std::ranlux48* rndGen ) :
 		rnd( rndGen ),
 		stepCounter( 0 ),
 		acceptanceCounter( 0 )
