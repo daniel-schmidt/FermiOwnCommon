@@ -22,38 +22,56 @@ namespace FermiOwn {
  * -# getting the quotient of new and old probabilities
  * -# accept/reject based on random decision with 2)
  *
- * Functions for each of these steps must be passed to this class at construction.
+ * Functions for each of these steps must be defined in derived classes.
  */
 class MetropolisStep {
 public:
 
 	/**
-	 * @brief Initialize a new MetropolisStep by defining the functions to execute at each substep.
+	 * @brief Initialize a new MetropolisStep.
 	 *
-	 * @param proposeNew		function, that alters the current configuration and generates a new proposition, must not have arguments or return value
-	 * @param calculateChange	function, that returns the change in probability p_new / p_old resulting from the change by proposeNew
-	 * @param onAccept			function to execute, if the proposed configuration is accepted, i.e. keeping it
-	 * @param onReject			function to execute, if the proposed configuration is not accepted, i.e. resetting the memory to the old configuration
-	 * @param rndGen			pointer to a random number generator to be used.
+	 * @param rndGen is a pointer to a random number generator to be used for the accept/reject step.
 	 */
-	MetropolisStep( std::ranlux48* rndGen );
+	inline MetropolisStep( std::ranlux48* rndGen );
 
-	virtual ~MetropolisStep();
+	/**
+	 * @brief Empty destructor, does nothing.
+	 */
+	virtual inline ~MetropolisStep();
 
 	/**
 	 * @brief Execute a single Metropolis step
 	 *
 	 * Subsequently calls propose, change and either accept or reject depending on a drawn random number.
 	 */
-	void step();
+	inline void step();
 
+	/**
+	 * @brief Actions to perform on each configuration.
+	 *
+	 * This can be overwritten to perform evaluations on things relevant to the metropolis step.
+	 * The function can return false, if some evaluation leads to the conclusion that
+	 * no further metropolis steps are needed. This is needed for Wang-Landa type (density of states)
+	 * algorithms.
+	 *
+	 * If the function is not overwritten, it does nothing and always returns true.
+	 *
+	 * @param confNum is the consecutive number of the configuration, that was just accepted or rejected
+	 * @return returns, if the simulation should continue, defaults to true
+	 */
 	inline virtual bool onConfig( size_t confNum );
+
 	/**
 	 * @brief Get the percentage of accepted configurations.
 	 * @return the number of accepted steps divided by the total number of steps made
 	 */
 	inline double getAcceptance() const;
 
+	/**
+	 * @brief Get the total number of steps.
+	 * @return The total number of times, step() was called.
+	 */
+	inline size_t getStepCount() const;
 protected:
 
 	 virtual void propose() =0;
@@ -69,11 +87,38 @@ private:
 	 size_t acceptanceCounter;
 };
 
+/*
+ * Inline function definitions
+ */
+
+MetropolisStep::MetropolisStep( std::ranlux48* rndGen ) :
+		rnd( rndGen ),
+		stepCounter( 0 ),
+		acceptanceCounter( 0 )
+{}
+
+MetropolisStep::~MetropolisStep() {}
+
+void MetropolisStep::step() {
+	propose();
+	if( uniformDistribution01( *rnd ) < change() ) {
+		accept();
+		acceptanceCounter++;
+	} else {
+		reject();
+	}
+	stepCounter++;
+}
 bool MetropolisStep::onConfig( size_t confNum ) {
 	return true;
 }
-inline double MetropolisStep::getAcceptance() const {
+
+double MetropolisStep::getAcceptance() const {
 	return double(acceptanceCounter)/double(stepCounter);
+}
+
+size_t MetropolisStep::getStepCount() const {
+	return stepCounter;
 }
 
 } /* namespace FermiOwn */

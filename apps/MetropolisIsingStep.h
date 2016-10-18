@@ -15,6 +15,11 @@
 
 namespace FermiOwn {
 
+/**
+ * @brief Example implementation of a metropolis step.
+ *
+ * This performs a single update of the Ising model.
+ */
 class MetropolisIsingStep: public MetropolisStep {
 public:
 	MetropolisIsingStep( double newBeta, Field<int>& spinField, const IsingHamiltonian& hamilton, std::ranlux48* rndGen );
