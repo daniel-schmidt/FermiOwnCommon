@@ -11,6 +11,7 @@
 #include "IsingHamiltonian.h"
 #include "ConfigGenerator.h"
 #include "MetropolisIsingStep.h"
+#include "Timer.h"
 
 namespace FermiOwn {
 } /* namespace FermiOwn */
@@ -32,7 +33,7 @@ int main( int argc, char** argv ) {
 	size_t numConfs = 1000;
 	size_t numUpPerConf = lat.getVol() * 20;
 
-
+	Timer timer;
 #pragma omp parallel for
 	for( size_t nbeta = 0; nbeta < 20; nbeta++ ) {
 
@@ -74,7 +75,10 @@ int main( int argc, char** argv ) {
 
 		// running the simulation
 		ConfigGenerator confGen( numThermal, numConfs, numUpPerConf, &met, measure );
+
+		timer.start();
 		confGen.run();
+		timer.stop();
 
 		avSpinOnConfig.close();
 
@@ -82,5 +86,6 @@ int main( int argc, char** argv ) {
 		avSpinAbs /= numConfs;
 
 		std::cout << beta << "\t" << averageSpin << "\t" << avSpinAbs << "\t" << met.getAcceptance() << std::endl;
+		timer.printDuration( "Calculation" );
 	}
 }
