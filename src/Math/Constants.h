@@ -9,6 +9,7 @@
 #define SRC_DATA_CONSTANTS_H_
 
 #include <complex>
+#include <vector>
 #include <Eigen/Dense>
 #include <Eigen/SparseCore>
 
@@ -17,6 +18,8 @@ namespace FermiOwn {
 	// basic numerical types
 	typedef std::complex< double > Complex;
 	typedef double Real;
+
+	typedef std::vector<size_t> idxVec;
 
 	// boolean fields from Eigen
 	typedef Eigen::Matrix< bool, Eigen::Dynamic, 1 > VectorXb;
