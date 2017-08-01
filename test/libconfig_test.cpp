@@ -56,5 +56,40 @@ int main() {
 		std::cerr << "No 'Nf' in configuration file." << std::endl;
 	}
 
-	return 0;
+	try {
+		const Setting & mcSettings = conf.lookup("mc");
+		int numThermal = 0;
+		if( mcSettings.lookupValue("num_thermal", numThermal) ) {
+			std::cout << "num_thermal: " << numThermal << std::endl;
+		} else {
+			std::cerr << "num_thermal not found in mc-section of configuration file." << std::endl;
+		}
+	} catch( const SettingNotFoundException &nfex ) {
+			std::cerr << "No 'mc' in configuration file." << std::endl;
+	}
+
+	Config newConf;
+
+	Setting& root = newConf.getRoot();
+	Setting& MC = root.add( "mc", Setting::TypeGroup );
+	MC.add( "num_thermal", Setting::TypeInt ) = 100;
+	MC.add( "num_measures", Setting::TypeInt ) = 1000;
+	MC.add( "num_updates_per_measure", Setting::TypeInt ) = 10;
+
+	Setting& Model = root.add("model", Setting::TypeGroup );
+	Model.add( "Nf", Setting::TypeInt ) = 1;
+	Setting& lattice_size = Model.add( "lattice_size", Setting::TypeArray );
+	lattice_size.add( Setting::TypeInt ) = 4;
+	lattice_size.add( Setting::TypeInt ) = 3;
+	lattice_size.add( Setting::TypeInt ) = 3;
+
+	const char* output_file = "new.conf";
+	try {
+		newConf.writeFile( output_file );
+	} catch( const FileIOException &fioex ) {
+		std::cerr << "I/O error while writing file: " << output_file << std::endl;
+		return(EXIT_FAILURE);
+	}
+
+	return EXIT_SUCCESS;
 }
