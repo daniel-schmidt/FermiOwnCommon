@@ -20,10 +20,6 @@ namespace FermiOwn {
 int main( int argc, char** argv ) {
 	using namespace FermiOwn;
 
-	ConfigMetropolisIsing conf;
-	conf.writeToFile();
-	exit(0);
-
 	size_t Nt = 16;
 	size_t Ns = 16;
 	size_t dim = 2;
