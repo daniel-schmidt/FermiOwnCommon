@@ -20,22 +20,26 @@ namespace FermiOwn {
 int main( int argc, char** argv ) {
 	using namespace FermiOwn;
 
-	size_t Nt = 16;
-	size_t Ns = 16;
+	size_t Nt = 8;
+	size_t Ns = 8;
 	size_t dim = 2;
 
 	Lattice lat( Nt, Ns, dim );
 
 	size_t dofPerPoint = 1;
 	double J = 1.;
-	double dbeta = 0.02;
+	double dbeta = 0.05;
 	double betaMin = atof( argv[1] );
 
 	size_t numThermal = 500;
-	size_t numConfs = 1000;
+	size_t numConfs = 100;
 	size_t numUpPerConf = lat.getVol() * 20;
 
 	Timer timer;
+
+	std::ofstream result_file("results/averages.dat");
+	result_file << "beta\tavg spin\tavg abs spin\tacceptance" << std::endl;
+	
 #pragma omp parallel for
 	for( size_t nbeta = 0; nbeta < 20; nbeta++ ) {
 
@@ -60,7 +64,7 @@ int main( int argc, char** argv ) {
 		MetropolisIsingStep met( beta, spin, H, &rndGen );
 
 		// setting up measurements
-		std::ofstream avSpinOnConfig("avSpinOnConfig_" + std::to_string( beta ) + ".dat");
+		std::ofstream avSpinOnConfig("results/avSpinOnConfig_" + std::to_string( beta ) + ".dat");
 		double averageSpin = 0.;
 		double avSpinAbs = 0.;
 
@@ -87,7 +91,7 @@ int main( int argc, char** argv ) {
 		averageSpin /= numConfs;
 		avSpinAbs /= numConfs;
 
-		std::cout << beta << "\t" << averageSpin << "\t" << avSpinAbs << "\t" << met.getAcceptance() << std::endl;
+		result_file << beta << "\t" << averageSpin << "\t" << avSpinAbs << "\t" << met.getAcceptance() << std::endl;
 		timer.printDuration( "Calculation" );
 	}
 }
