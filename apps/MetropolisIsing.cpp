@@ -20,20 +20,21 @@ namespace FermiOwn {
 int main( int argc, char** argv ) {
 	using namespace FermiOwn;
 
-	size_t Nt = 8;
-	size_t Ns = 8;
-	size_t dim = 2;
+	size_t constexpr Nt = 64;
+	size_t constexpr Ns = 64;
+	size_t constexpr dim = 2;
 
 	Lattice lat( Nt, Ns, dim );
 
-	size_t dofPerPoint = 1;
-	double J = 1.;
-	double dbeta = 0.05;
-	double betaMin = atof( argv[1] );
+	size_t constexpr dofPerPoint = 1;
+	double constexpr J = 1.;
+	double constexpr dT = 0.1;
+	double constexpr T_min = 0.5;
+	size_t constexpr num_T = 36;
 
-	size_t numThermal = 500;
-	size_t numConfs = 100;
-	size_t numUpPerConf = lat.getVol() * 20;
+	size_t constexpr numThermal = 500;
+	size_t constexpr numConfs = 10000;
+	size_t const numUpPerConf = lat.getVol() * 20;
 
 	Timer timer;
 
@@ -41,7 +42,7 @@ int main( int argc, char** argv ) {
 	result_file << "beta\tavg spin\tavg abs spin\tacceptance" << std::endl;
 	
 #pragma omp parallel for
-	for( size_t nbeta = 0; nbeta < 20; nbeta++ ) {
+	for( size_t n_T = 0; n_T < num_T; n_T++ ) {
 
 		std::ranlux48 rndGen;
 
@@ -49,8 +50,6 @@ int main( int argc, char** argv ) {
 		std::uniform_int_distribution<int> x_dist(0, lat.getVol()-1 );
 
 		// initialization of physical parameters
-		double beta = betaMin + nbeta*dbeta;
-
 		Field<int> spin( lat.getVol(), dofPerPoint, &rndGen, oneInit);
 
 		for( size_t x = 0; x < lat.getVol(); x++ ) {
@@ -61,10 +60,12 @@ int main( int argc, char** argv ) {
 
 		IsingHamiltonian H( lat, spin, J );
 
+		double const T = (T_min + n_T*dT);
+		double const beta = 1.0/T;
 		MetropolisIsingStep met( beta, spin, H, &rndGen );
 
 		// setting up measurements
-		std::ofstream avSpinOnConfig("results/avSpinOnConfig_" + std::to_string( beta ) + ".dat");
+		std::ofstream avSpinOnConfig("results/avSpinOnConfig_" + std::to_string( T ) + ".dat");
 		double averageSpin = 0.;
 		double avSpinAbs = 0.;
 
@@ -91,7 +92,7 @@ int main( int argc, char** argv ) {
 		averageSpin /= numConfs;
 		avSpinAbs /= numConfs;
 
-		result_file << beta << "\t" << averageSpin << "\t" << avSpinAbs << "\t" << met.getAcceptance() << std::endl;
+		result_file << T << "\t" << averageSpin << "\t" << avSpinAbs << "\t" << met.getAcceptance() << std::endl;
 		timer.printDuration( "Calculation" );
 	}
 }
