@@ -65,10 +65,12 @@ int main( int argc, char** argv ) {
 		MetropolisIsingStep met( beta, spin, H, &rndGen );
 
 		// setting up measurements
-		std::ofstream avSpinOnConfig("results/avSpinOnConfig_" + std::to_string( T ) + ".dat");
 		double averageSpin = 0.;
 		double avSpinAbs = 0.;
 
+		std::vector<std::pair<size_t, double>> mag_on_config{};
+		mag_on_config.reserve(numConfs);
+		size_t config_counter = 0;
 		auto measure = [&](){
 			// average spin on lattice
 			int averageSpinOnConf = 0.;
@@ -78,7 +80,8 @@ int main( int argc, char** argv ) {
 			double const m = averageSpinOnConf/static_cast<double>(lat.getVol());
 			averageSpin += m;
 			avSpinAbs += abs(m);
-			avSpinOnConfig << abs(m) << "\n";
+			mag_on_config.emplace_back(config_counter, m);
+			config_counter++;
 		};
 
 		// running the simulation
@@ -88,6 +91,10 @@ int main( int argc, char** argv ) {
 		confGen.run();
 		timer.stop();
 
+		std::ofstream avSpinOnConfig("results/avSpinOnConfig_" + std::to_string( T ) + ".dat");
+		for(auto const & [config_number, mag] : mag_on_config) {
+			avSpinOnConfig << config_number << "\t" << mag << "\n";
+		}
 		avSpinOnConfig.close();
 
 		averageSpin /= numConfs;
