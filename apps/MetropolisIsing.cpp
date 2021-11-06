@@ -20,8 +20,8 @@ namespace FermiOwn {
 int main( int argc, char** argv ) {
 	using namespace FermiOwn;
 
-	size_t constexpr Nt = 64;
-	size_t constexpr Ns = 64;
+	size_t constexpr Nt = 16;
+	size_t constexpr Ns = 16;
 	size_t constexpr dim = 2;
 
 	Lattice lat( Nt, Ns, dim );
@@ -33,7 +33,7 @@ int main( int argc, char** argv ) {
 	size_t constexpr num_T = 36;
 
 	size_t constexpr numThermal = 500;
-	size_t constexpr numConfs = 10000;
+	size_t constexpr numConfs = 1000;
 	size_t const numUpPerConf = lat.getVol() * 20;
 
 	Timer timer;
@@ -75,9 +75,10 @@ int main( int argc, char** argv ) {
 			for(size_t x = 0; x < lat.getVol(); x++ )
 				averageSpinOnConf += spin(x);
 
-			averageSpin += averageSpinOnConf/double(lat.getVol());
-			avSpinAbs += abs( averageSpinOnConf )/double(lat.getVol());
-			avSpinOnConfig << averageSpinOnConf/double(lat.getVol()) << std::endl;
+			double const m = averageSpinOnConf/static_cast<double>(lat.getVol());
+			averageSpin += m;
+			avSpinAbs += abs(m);
+			avSpinOnConfig << abs(m) << "\n";
 		};
 
 		// running the simulation
