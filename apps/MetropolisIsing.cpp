@@ -36,14 +36,12 @@ int main( int argc, char** argv ) {
 	size_t constexpr numConfs = 1000;
 	size_t const numUpPerConf = lat.getVol() * 20;
 
-	Timer timer;
 
 	std::ofstream result_file("results/averages.dat");
 	result_file << "beta\tavg spin\tavg abs spin\tacceptance" << std::endl;
 	
 #pragma omp parallel for
 	for( size_t n_T = 0; n_T < num_T; n_T++ ) {
-
 		std::ranlux48 rndGen;
 
 		std::uniform_int_distribution<int> spin_dist(0,1);
@@ -87,6 +85,7 @@ int main( int argc, char** argv ) {
 		// running the simulation
 		ConfigGenerator confGen( numThermal, numConfs, numUpPerConf, &met, measure );
 
+		Timer timer;
 		timer.start();
 		confGen.run();
 		timer.stop();
